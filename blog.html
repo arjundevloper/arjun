@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Blog — Arjun Bhadauria. Thoughts on code, games, art, hardware and life."/>
+<title>Blog — Arjun Bhadauria</title>
+<link rel="stylesheet" href="assets/style.css"/>
+<style>
+/* ── BLOG PAGE STYLES ── */
+
+/* NAV (blog has fixed bg always) */
+nav { background:rgba(9,9,15,.96); border-color:var(--border); backdrop-filter:blur(18px); }
+
+/* HERO */
+.blog-hero {
+  padding:140px 48px 80px; border-bottom:1px solid var(--border); position:relative; overflow:hidden;
+}
+.blog-hero-orb1 { width:400px; height:400px; top:-60px; right:-80px; }
+.blog-hero-orb2 { width:300px; height:300px; bottom:-40px; left:-60px; }
+.blog-eyebrow {
+  font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.35em; text-transform:uppercase;
+  margin-bottom:24px; display:flex; align-items:center; gap:14px;
+  background:linear-gradient(90deg,var(--cyan),var(--green));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.blog-eyebrow::before { content:''; display:block; width:28px; height:1px; background:var(--cyan); }
+.blog-hero-title { font-size:var(--fs-hero); font-weight:300; line-height:.9; letter-spacing:-.02em; }
+.blog-hero-title em {
+  font-style:italic;
+  background:linear-gradient(135deg,var(--cyan),var(--violet));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.blog-hero-sub { max-width:520px; color:var(--muted); font-size:var(--fs-md); margin-top:28px; line-height:1.7; }
+
+/* FILTER */
+.filter-bar { padding:26px 48px; border-bottom:1px solid var(--border); display:flex; gap:6px; flex-wrap:wrap; }
+.filter-btn {
+  font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); background:none; border:1px solid var(--border); padding:8px 18px;
+  cursor:pointer; transition:all .2s; border-radius:2px;
+}
+.filter-btn:hover { color:var(--violet); border-color:var(--violet); background:var(--glow-v); }
+.filter-btn.active { color:var(--violet-l); border-color:var(--violet); background:rgba(155,89,246,.1); }
+
+/* FEATURED */
+.featured-post { border-bottom:1px solid var(--border); }
+.featured-inner { display:grid; grid-template-columns:1fr 1fr; padding:72px 48px; gap:64px; align-items:center; }
+.post-label {
+  font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.3em; text-transform:uppercase;
+  margin-bottom:16px;
+  background:linear-gradient(90deg,var(--violet),var(--pink));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.featured-title { font-size:var(--fs-xl); font-weight:300; line-height:1.05; margin-bottom:16px; }
+.featured-title em { font-style:italic; color:var(--violet); }
+.post-meta { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.16em; color:var(--muted); margin-bottom:20px; display:flex; gap:14px; flex-wrap:wrap; }
+.post-excerpt { color:var(--muted); font-size:var(--fs-base); line-height:1.85; margin-bottom:28px; }
+.featured-visual {
+  aspect-ratio:4/3; background:var(--surface); border:1px solid var(--border); position:relative; overflow:hidden;
+}
+.featured-visual::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(155,89,246,.1),rgba(0,212,204,.07));
+}
+.featured-visual canvas { width:100%; height:100%; display:block; }
+
+/* POSTS GRID */
+.posts-section { padding:64px 48px; }
+.posts-section-title { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.28em; color:var(--muted); text-transform:uppercase; margin-bottom:32px; padding-bottom:14px; border-bottom:1px solid var(--border); }
+.posts-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+.post-card {
+  background:var(--surface); border:1px solid var(--border); padding:32px;
+  position:relative; overflow:hidden; transition:border-color .3s, transform .3s;
+}
+.post-card:hover { border-color:var(--border2); transform:translateY(-2px); }
+.post-card::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 0% 0%,rgba(155,89,246,.07),transparent 60%); opacity:0; transition:opacity .4s; }
+.post-card:hover::before { opacity:1; }
+.post-card-date { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.15em; color:var(--muted); margin-bottom:12px; }
+.post-card-tag { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.13em; padding:3px 10px; border-radius:2px; display:inline-block; margin-bottom:14px; }
+.post-card-title { font-size:var(--fs-md); font-weight:300; line-height:1.3; margin-bottom:12px; color:var(--text); }
+.post-card-excerpt { color:var(--muted); font-size:var(--fs-sm); line-height:1.8; margin-bottom:18px; }
+.post-card-link { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.15em; color:var(--muted); text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:color .2s,gap .2s; }
+.post-card-link:hover { color:var(--violet); gap:10px; }
+.post-card.soon { opacity:.42; }
+.post-card.soon .post-card-link { display:none; }
+.soon-badge { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.14em; color:var(--dim); border:1px solid var(--dim); padding:3px 8px; display:inline-block; }
+
+/* ═══════════════════════════════
+   COMMENT SECTION
+═══════════════════════════════ */
+.comments-section { padding:64px 48px; border-top:1px solid var(--border); position:relative; overflow:hidden; }
+.comments-orb { width:300px; height:300px; top:-40px; right:-60px; }
+
+.comments-heading { display:flex; align-items:center; gap:16px; margin-bottom:48px; flex-wrap:wrap; }
+.comments-heading h2 { font-size:var(--fs-lg); font-weight:300; }
+.comments-heading h2 em { font-style:italic; color:var(--violet); }
+.comments-count {
+  font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.18em;
+  border:1px solid var(--violet); padding:4px 14px; color:var(--violet-l);
+  background:rgba(155,89,246,.08); border-radius:2px;
+}
+
+/* Comment form */
+.comment-form-wrap {
+  background:var(--surface); border:1px solid var(--border); padding:36px; margin-bottom:48px;
+  position:relative;
+}
+.comment-form-wrap::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--violet),var(--pink),var(--cyan));
+}
+.comment-form-title { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.28em; text-transform:uppercase; margin-bottom:28px; color:var(--violet-l); }
+.comment-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.comment-form-grid .full { grid-column:span 2; }
+.cf-group { display:flex; flex-direction:column; gap:8px; }
+.cf-label { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.2em; color:var(--muted); text-transform:uppercase; }
+.cf-input, .cf-textarea {
+  background:transparent; border:none; border-bottom:1px solid var(--border);
+  color:var(--text); font-family:var(--serif); font-size:var(--fs-base);
+  padding:11px 0; outline:none; transition:border-color .3s; width:100%;
+}
+.cf-input:focus, .cf-textarea:focus { border-color:var(--violet); }
+.cf-textarea { resize:none; height:110px; }
+.cf-submit {
+  font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.2em; text-transform:uppercase;
+  color:#fff; background:linear-gradient(135deg,var(--violet),var(--pink));
+  border:none; padding:14px 34px; cursor:pointer; transition:opacity .3s,transform .2s; margin-top:8px;
+}
+.cf-submit:hover { opacity:.85; transform:translateY(-2px); }
+
+/* Comment list */
+.comments-list { display:flex; flex-direction:column; gap:3px; }
+.comment-item { background:var(--surface); border:1px solid var(--border); padding:28px 32px; position:relative; transition:border-color .3s; }
+.comment-item:hover { border-color:var(--border2); }
+/* accent stripe based on depth */
+.comment-item::before { content:''; position:absolute; top:0; left:0; bottom:0; width:3px; background:linear-gradient(to bottom,var(--violet),var(--pink)); border-radius:0; }
+.comment-item.reply::before { background:linear-gradient(to bottom,var(--cyan),var(--green)); }
+
+.comment-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
+.comment-author { display:flex; align-items:center; gap:14px; }
+.comment-avatar {
+  width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:12px; font-weight:700; flex-shrink:0;
+  background:linear-gradient(135deg,var(--violet-d),var(--violet));
+  color:#fff; border:1px solid var(--border2);
+}
+.comment-item.reply .comment-avatar { background:linear-gradient(135deg,#006060,var(--cyan)); width:32px; height:32px; font-size:10px; }
+.comment-name { font-size:var(--fs-base); font-weight:300; color:var(--text); }
+.comment-date { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.14em; color:var(--muted); }
+.comment-body { color:var(--muted); font-size:var(--fs-base); line-height:1.8; padding-left:54px; }
+.comment-reply-btn {
+  font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.15em;
+  color:var(--muted); background:none; border:none; cursor:pointer; padding:0;
+  transition:color .2s; display:flex; align-items:center; gap:6px; margin-top:12px; margin-left:54px;
+}
+.comment-reply-btn:hover { color:var(--cyan); }
+
+.comment-item.reply { margin-left:40px; }
+.comment-item.reply .comment-body { padding-left:46px; }
+.comment-item.reply .comment-reply-btn { margin-left:46px; }
+
+/* Inline reply form */
+.reply-form { display:none; margin-top:16px; margin-left:54px; padding:20px; background:var(--bg); border:1px solid var(--border); }
+.reply-form.open { display:block; }
+.reply-form .cf-group { margin-bottom:14px; }
+.reply-submit {
+  font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.18em; text-transform:uppercase;
+  color:#fff; background:linear-gradient(135deg,var(--cyan),var(--green)); border:none;
+  padding:10px 24px; cursor:pointer; transition:opacity .2s; margin-top:6px;
+}
+.reply-submit:hover { opacity:.8; }
+
+.no-comments { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.18em; color:var(--muted); text-align:center; padding:48px; border:1px solid var(--border); background:var(--surface); }
+
+/* CTA */
+.write-cta {
+  margin:0 48px 64px; padding:48px; border:1px solid var(--border); background:var(--surface);
+  display:flex; justify-content:space-between; align-items:center; gap:40px; flex-wrap:wrap;
+  position:relative; overflow:hidden;
+}
+.write-cta::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--violet),var(--cyan),var(--pink)); }
+.write-cta-text h3 { font-size:var(--fs-lg); font-weight:300; margin-bottom:8px; }
+.write-cta-text h3 em { font-style:italic; color:var(--cyan); }
+.write-cta-text p { color:var(--muted); font-size:var(--fs-sm); max-width:400px; line-height:1.7; }
+.write-cta-btn {
+  font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.2em; text-transform:uppercase;
+  color:#fff; background:linear-gradient(135deg,var(--cyan),var(--green));
+  border:none; padding:14px 32px; cursor:pointer; transition:opacity .3s;
+  white-space:nowrap; text-decoration:none; display:inline-block;
+}
+.write-cta-btn:hover { opacity:.82; }
+
+/* COMING SOON */
+.coming-soon-wrap {
+  padding:100px 48px; border-bottom:1px solid var(--border);
+  display:flex; flex-direction:column; align-items:center; text-align:center; gap:24px;
+}
+.cs-icon { margin-bottom:8px; animation:pulse 2.5s ease infinite; }
+.cs-heading { font-size:var(--fs-xl); font-weight:300; line-height:1.05; }
+.cs-heading em { font-style:italic; color:var(--violet); }
+.cs-sub { max-width:480px; color:var(--muted); font-size:var(--fs-base); line-height:1.75; }
+
+/* Responsive */
+@media(max-width:900px){
+  .blog-hero { padding:120px 28px 60px; }
+  .filter-bar { padding:20px 28px; }
+  .featured-inner { grid-template-columns:1fr; padding:52px 28px; gap:36px; }
+  .featured-visual { display:none; }
+  .featured-title { font-size:var(--fs-lg); }
+  .posts-section { padding:48px 28px; }
+  .posts-grid { grid-template-columns:1fr 1fr; }
+  .comments-section { padding:48px 28px; }
+  .comment-form-grid { grid-template-columns:1fr; }
+  .comment-form-grid .full { grid-column:span 1; }
+  .write-cta { margin:0 28px 48px; padding:36px 28px; }
+}
+@media(max-width:560px){
+  .blog-hero { padding:100px 18px 48px; }
+  .filter-bar { padding:14px 18px; gap:5px; }
+  .filter-btn { padding:6px 10px; font-size:10px; }
+  .featured-inner { padding:36px 18px; }
+  .posts-section { padding:36px 18px; }
+  .posts-grid { grid-template-columns:1fr; }
+  .comments-section { padding:36px 18px; }
+  .comment-form-wrap { padding:22px 16px; }
+  .comment-body,.comment-reply-btn { padding-left:0; }
+  .reply-form { margin-left:0; }
+  .comment-item.reply { margin-left:16px; }
+  .comment-item.reply .comment-body,.comment-item.reply .comment-reply-btn { padding-left:0; }
+  .write-cta { margin:0 18px 36px; padding:24px 18px; flex-direction:column; align-items:flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-dot"  id="cDot"></div>
+<div class="cursor-ring" id="cRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Arjun Bhadauria.</a>
+  <a href="index.html" class="arrow-link" style="font-family:var(--mono);font-size:var(--fs-xs);letter-spacing:.18em;">&#8592;&nbsp;Portfolio</a>
+</nav>
+
+<!-- HERO -->
+<div class="blog-hero">
+  <div class="orb orb-v blog-hero-orb1"></div>
+  <div class="orb orb-p blog-hero-orb2"></div>
+  <div class="blog-eyebrow">Writing</div>
+  <h1 class="blog-hero-title">Thoughts<br>&amp;&nbsp;<em>Notes</em></h1>
+  <p class="blog-hero-sub">On code, games, art, hardware, and whatever else is living rent-free in my head. Written by Arjun &mdash; Class 12 ISC student and curious human.</p>
+</div>
+
+
+<!-- COMING SOON -->
+<div class="coming-soon-wrap reveal">
+  <div class="cs-icon">
+    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+      <circle cx="28" cy="28" r="27" stroke="url(#csg)" stroke-width="1.2"/>
+      <path d="M28 16v12l8 4" stroke="url(#csg)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <defs>
+        <linearGradient id="csg" x1="0" y1="0" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#9b59f6"/><stop offset="1" stop-color="#00d4cc"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+  <h2 class="cs-heading">Posts are<br><em>coming soon</em></h2>
+  <p class="cs-sub">I'm writing about code, games, art, hardware, and life as a Class 12 student. Check back soon &mdash; or drop your email to get notified.</p>
+  <a href="mailto:arjun.dev.work@gmail.com" class="btn btn-primary" style="margin-top:8px;">Notify Me &#8594;</a>
+</div>
+
+<!-- COMMENTS -->
+<div class="comments-section">
+  <div class="orb orb-v comments-orb" style="opacity:.08;"></div>
+  <div class="comments-heading reveal">
+    <h2>Comments</h2>
+    <span class="comments-count" id="commentCount">0 Comments</span>
+  </div>
+  <div class="comment-form-wrap reveal">
+    <div class="comment-form-title">Leave a Comment</div>
+    <div class="comment-form-grid">
+      <div class="cf-group"><label class="cf-label">Name *</label><input class="cf-input" id="cfName" type="text" placeholder="Your name" required/></div>
+      <div class="cf-group"><label class="cf-label">Email (not shown)</label><input class="cf-input" id="cfEmail" type="email" placeholder="your@email.com"/></div>
+      <div class="cf-group full"><label class="cf-label">Comment *</label><textarea class="cf-textarea" id="cfBody" placeholder="Share your thoughts..."></textarea></div>
+      <div class="full"><button class="cf-submit" onclick="submitComment()">Post Comment &#8594;</button></div>
+    </div>
+  </div>
+  <div class="no-comments" id="emptyState">No comments yet &mdash; be the first.</div>
+  <div class="comments-list" id="commentsList"></div>
+</div>
+
+<footer>
+  <p>&#169; 2026 Arjun Bhadauria</p>
+  <a href="index.html">&#8592; Back to Portfolio</a>
+</footer>
+
+<script src="assets/main.js"></script>
+<script>
+let commentCount=0;
+function updateCount(){ document.getElementById('commentCount').textContent=commentCount+' Comment'+(commentCount!==1?'s':''); }
+
+function submitComment(){
+  const name=document.getElementById('cfName').value.trim();
+  const body=document.getElementById('cfBody').value.trim();
+  if(!name||!body){alert('Please fill in your name and comment.');return;}
+  document.getElementById('emptyState').style.display='none';
+  const initials=name.split(' ').map(w=>w[0].toUpperCase()).join('').slice(0,2);
+  const id='c-'+Date.now(), rfId='rf-'+Date.now();
+  const item=document.createElement('div');
+  item.className='comment-item'; item.id=id;
+  item.innerHTML=`
+    <div class="comment-header">
+      <div class="comment-author"><div class="comment-avatar">${initials}</div><div><div class="comment-name">${name}</div></div></div>
+      <div class="comment-date">Just now</div>
+    </div>
+    <div class="comment-body">${body.replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>
+    <button class="comment-reply-btn" onclick="toggleReply('${rfId}')">&#8617; Reply</button>
+    <div class="reply-form" id="${rfId}">
+      <div class="cf-group"><label class="cf-label">Reply</label><textarea class="cf-textarea" id="rt-${rfId}" style="height:75px" placeholder="Write a reply..."></textarea></div>
+      <div class="cf-group" style="margin-top:12px;"><label class="cf-label">Name</label><input class="cf-input" id="rn-${rfId}" type="text" placeholder="Your name"/></div>
+      <button class="reply-submit" onclick="submitReply('${id}','${rfId}')">Reply &#8594;</button>
+    </div>`;
+  document.getElementById('commentsList').prepend(item);
+  document.getElementById('cfName').value='';
+  document.getElementById('cfEmail').value='';
+  document.getElementById('cfBody').value='';
+  commentCount++; updateCount();
+  item.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function toggleReply(id){ document.getElementById(id)?.classList.toggle('open'); }
+
+function submitReply(parentId,rfId){
+  const nameEl=document.getElementById('rn-'+rfId), bodyEl=document.getElementById('rt-'+rfId);
+  if(!nameEl||!bodyEl)return;
+  const name=nameEl.value.trim(), body=bodyEl.value.trim();
+  if(!name||!body){alert('Please fill in your name and reply.');return;}
+  const initials=name.split(' ').map(w=>w[0].toUpperCase()).join('').slice(0,2);
+  const reply=document.createElement('div');
+  reply.className='comment-item reply';
+  reply.innerHTML=`
+    <div class="comment-header">
+      <div class="comment-author"><div class="comment-avatar" style="width:32px;height:32px;font-size:10px;">${initials}</div><div><div class="comment-name">${name}</div></div></div>
+      <div class="comment-date">Just now</div>
+    </div>
+    <div class="comment-body">${body.replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>`;
+  document.getElementById(rfId)?.classList.remove('open');
+  document.getElementById(parentId).insertAdjacentElement('afterend',reply);
+  nameEl.value=''; bodyEl.value='';
+  commentCount++; updateCount();
+}
+</script>
+</body>
+</html>
