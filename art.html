@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Art — Arjun Bhadauria. Drawings, illustrations and generative art."/>
+<title>Art — Arjun Bhadauria</title>
+<link rel="stylesheet" href="assets/style.css"/>
+<style>
+nav { background:rgba(9,9,15,.96); border-color:var(--border); backdrop-filter:blur(18px); }
+
+/* HERO */
+.art-hero {
+  padding:140px 48px 80px; border-bottom:1px solid var(--border); position:relative; overflow:hidden;
+}
+.art-hero-orb1 { width:420px; height:420px; top:-60px; right:-80px; }
+.art-hero-orb2 { width:280px; height:280px; bottom:-40px; left:-60px; }
+.art-eyebrow {
+  font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.35em; text-transform:uppercase;
+  margin-bottom:24px; display:flex; align-items:center; gap:14px;
+  background:linear-gradient(90deg,var(--pink),var(--amber));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.art-eyebrow::before { content:''; display:block; width:28px; height:1px; background:var(--pink); }
+.art-hero-title { font-size:var(--fs-hero); font-weight:300; line-height:.9; letter-spacing:-.02em; }
+.art-hero-title em {
+  font-style:italic;
+  background:linear-gradient(135deg,var(--pink),var(--violet));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.art-hero-sub { max-width:520px; color:var(--muted); font-size:var(--fs-md); margin-top:28px; line-height:1.7; }
+
+/* UPLOAD NOTICE */
+.upload-notice {
+  margin:48px 48px 0;
+  padding:20px 28px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-left:3px solid var(--violet);
+  font-family:var(--mono);
+  font-size:var(--fs-xs);
+  letter-spacing:.14em;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.upload-notice span { color:var(--violet-l); }
+
+/* GALLERY */
+.gallery-section { padding:64px 48px; }
+.gallery-section-title {
+  font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.28em;
+  color:var(--muted); text-transform:uppercase;
+  margin-bottom:32px; padding-bottom:14px; border-bottom:1px solid var(--border);
+}
+
+/* Masonry-style grid */
+.art-grid-main {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:3px;
+}
+.art-item {
+  position:relative; overflow:hidden;
+  background:var(--surface); border:1px solid var(--border);
+  transition:border-color .3s, transform .3s;
+}
+.art-item:hover { border-color:var(--border2); transform:scale(1.01); z-index:1; }
+.art-item.wide { grid-column:span 2; }
+.art-item.tall { grid-row:span 2; }
+
+.art-canvas { width:100%; display:block; }
+.art-img { width:100%; height:100%; object-fit:cover; display:block; }
+
+.art-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(to top,rgba(9,9,15,.9) 0%,transparent 50%);
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding:24px; opacity:0; transition:opacity .3s;
+}
+.art-item:hover .art-overlay { opacity:1; }
+.art-title { font-size:var(--fs-md); margin-bottom:4px; color:var(--text); }
+.art-medium { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.16em; color:var(--pink-l); }
+
+/* CTA */
+.art-cta {
+  margin:0 48px 64px; padding:48px; border:1px solid var(--border); background:var(--surface);
+  display:flex; justify-content:space-between; align-items:center; gap:40px; flex-wrap:wrap;
+  position:relative; overflow:hidden;
+}
+.art-cta::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--pink),var(--violet),var(--amber)); }
+.art-cta-text h3 { font-size:var(--fs-lg); font-weight:300; margin-bottom:8px; }
+.art-cta-text h3 em { font-style:italic; color:var(--pink); }
+.art-cta-text p { color:var(--muted); font-size:var(--fs-sm); max-width:400px; line-height:1.7; }
+.art-cta-btn {
+  font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.2em; text-transform:uppercase;
+  color:#fff; background:linear-gradient(135deg,var(--pink),var(--violet));
+  border:none; padding:14px 32px; cursor:pointer; transition:opacity .3s;
+  white-space:nowrap; text-decoration:none; display:inline-block;
+}
+.art-cta-btn:hover { opacity:.82; }
+
+/* Responsive */
+@media(max-width:1280px){
+  .art-hero { padding:130px 36px 60px; }
+  .gallery-section { padding-left:36px; padding-right:36px; }
+  .art-cta { margin:0 36px 56px; }
+}
+@media(max-width:900px){
+  nav { padding:18px 28px; }
+  .art-hero { padding:110px 28px 52px; }
+  .gallery-section { padding-left:28px; padding-right:28px; }
+  .art-grid-main { grid-template-columns:1fr 1fr; }
+  .art-item.wide { grid-column:span 2; }
+  .art-cta { margin:0 28px 44px; padding:32px 28px; }
+}
+@media(max-width:600px){
+  nav { padding:14px 20px; }
+  .art-hero { padding:90px 20px 44px; }
+  .art-hero-title { font-size:clamp(48px,13vw,80px); }
+  .art-hero-sub { font-size:var(--fs-base); }
+  .gallery-section { padding:32px 20px; }
+  .art-grid-main { grid-template-columns:1fr; }
+  .art-item.wide, .art-item.tall { grid-column:span 1; grid-row:span 1; }
+  .art-cta { margin:0 20px 36px; padding:24px 20px; flex-direction:column; align-items:flex-start; }
+}
+@media(max-width:380px){
+  .art-hero { padding:80px 14px 36px; }
+  .gallery-section { padding-left:14px; padding-right:14px; }
+  .art-cta { margin:0 14px 28px; padding:18px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-dot"  id="cDot"></div>
+<div class="cursor-ring" id="cRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Arjun Bhadauria.</a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#projects">Work</a></li>
+    <li><a href="index.html#skills">Skills</a></li>
+    <li><a href="art.html" style="color:var(--pink-l);">Art</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-mobile" id="navMobile">
+  <a href="index.html#about"   onclick="closeMobileNav()">About</a>
+  <a href="index.html#projects" onclick="closeMobileNav()">Work</a>
+  <a href="index.html#skills"  onclick="closeMobileNav()">Skills</a>
+  <a href="art.html"           onclick="closeMobileNav()" style="color:var(--pink-l);">Art</a>
+  <a href="blog.html"          onclick="closeMobileNav()">Blog</a>
+  <a href="index.html#contact" onclick="closeMobileNav()">Contact</a>
+</div>
+
+<!-- HERO -->
+<div class="art-hero">
+  <div class="orb orb-p art-hero-orb1"></div>
+  <div class="orb orb-v art-hero-orb2"></div>
+  <div class="art-eyebrow">Art &amp; Visuals</div>
+  <h1 class="art-hero-title">I draw.<br><em>All day</em><br>if I could.</h1>
+  <p class="art-hero-sub">A collection of drawings, illustrations, and generative experiments. Art is the one thing I never need a reason to do.</p>
+</div>
+
+<!-- UPLOAD NOTICE -->
+<div class="upload-notice reveal" style="display:none;">
+  <span>&#9670;</span>
+  Add your drawings: drop image files into <span>assets/img/</span> and replace the placeholder canvases below with <span>&lt;img&gt;</span> tags
+</div>
+
+<!-- YOUR ART GALLERY (replace canvases with your images) -->
+<div class="gallery-section">
+  <div class="gallery-section-title">Your Artwork</div>
+  <div class="art-grid-main reveal">
+
+    <!-- Wide piece (replace canvas with: <img src="assets/img/art1.jpg" alt="..." class="art-img">) -->
+    <div class="art-item wide">
+      <canvas class="art-canvas" id="placeholder1"></canvas>
+      <div class="art-overlay">
+        <div class="art-title">Coming Soon</div>
+        <div class="art-medium"></div>
+      </div>
+    </div>
+
+    <!-- Square piece -->
+    <div class="art-item">
+      <canvas class="art-canvas" id="placeholder2"></canvas>
+      <div class="art-overlay">
+        <div class="art-title">Coming Soon</div>
+        <div class="art-medium"></div>
+      </div>
+    </div>
+
+    <!-- Square piece -->
+    <div class="art-item">
+      <canvas class="art-canvas" id="placeholder3"></canvas>
+      <div class="art-overlay">
+        <div class="art-title">Coming Soon</div>
+        <div class="art-medium"></div>
+      </div>
+    </div>
+
+    <!-- Wide piece -->
+    <div class="art-item wide">
+      <canvas class="art-canvas" id="placeholder4"></canvas>
+      <div class="art-overlay">
+        <div class="art-title">Coming Soon</div>
+        <div class="art-medium"></div>
+      </div>
+    </div>
+
+    <!-- Square piece -->
+    <div class="art-item">
+      <canvas class="art-canvas" id="placeholder5"></canvas>
+      <div class="art-overlay">
+        <div class="art-title">Coming Soon</div>
+        <div class="art-medium"></div>
+      </div>
+    </div>
+
+    <!-- Square piece -->
+    <div class="art-item">
+      <canvas class="art-canvas" id="placeholder6"></canvas>
+      <div class="art-overlay">
+        <div class="art-title">Coming Soon</div>
+        <div class="art-medium"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- GENERATIVE ART -->
+<!-- CTA -->
+<div class="art-cta reveal">
+  <div class="art-cta-text">
+    <h3>Like what you see?<br><em>Let's connect.</em></h3>
+    <p>Always open to talking about art, collab ideas, or just vibing about creative stuff.</p>
+  </div>
+  <a href="index.html#contact" class="art-cta-btn">Get In Touch &#8594;</a>
+</div>
+
+<footer>
+  <p>&#169; 2026 Arjun Bhadauria. All rights reserved.</p>
+  <a href="index.html">&#8592; Back to Portfolio</a>
+</footer>
+
+<script src="assets/main.js"></script>
+<script>
+/* Placeholder canvases for the "your art" slots */
+function drawPlaceholder(id, w, h, colorA, colorB) {
+  const c = document.getElementById(id);
+  if (!c) return;
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#0f0f1a'; ctx.fillRect(0, 0, w, h);
+  /* subtle grid */
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)'; ctx.lineWidth = 1;
+  for (let x = 0; x < w; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+  for (let y = 0; y < h; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+  /* centre glow */
+  const g = ctx.createRadialGradient(w*.5,h*.5,10,w*.5,h*.5,Math.min(w,h)*.45);
+  g.addColorStop(0, colorA); g.addColorStop(1, 'transparent');
+  ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+  /* dashed border */
+  ctx.setLineDash([6,6]); ctx.strokeStyle='rgba(255,255,255,0.07)'; ctx.lineWidth=1;
+  ctx.strokeRect(16,16,w-32,h-32);
+  /* label */
+  ctx.setLineDash([]);
+  ctx.font = '11px monospace'; ctx.fillStyle='rgba(255,255,255,0.18)';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('Coming Soon', w/2, h/2);
+}
+
+drawPlaceholder('placeholder1', 900, 400, 'rgba(240,80,160,0.1)',  'rgba(155,89,246,0)');
+drawPlaceholder('placeholder2', 400, 400, 'rgba(155,89,246,0.1)',  'rgba(0,212,204,0)');
+drawPlaceholder('placeholder3', 400, 400, 'rgba(0,212,204,0.1)',   'rgba(255,184,48,0)');
+drawPlaceholder('placeholder4', 900, 400, 'rgba(255,184,48,0.08)', 'rgba(54,240,160,0)');
+drawPlaceholder('placeholder5', 400, 400, 'rgba(54,240,160,0.1)',  'rgba(240,80,160,0)');
+drawPlaceholder('placeholder6', 400, 400, 'rgba(240,80,160,0.1)',  'rgba(155,89,246,0)');
+</script>
+</body>
+</html>

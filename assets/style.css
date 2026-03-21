@@ -49,7 +49,7 @@
 
 /* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-padding-top: 72px; }
 
 body {
   background: var(--bg);
@@ -247,7 +247,7 @@ footer a { font-family:var(--mono); font-size:var(--fs-xs); letter-spacing:.15em
 footer a:hover { color:var(--violet); }
 
 /* ══════════════════════════════════
-   TABLET ≤900px
+   SHARED RESPONSIVE
 ══════════════════════════════════ */
 @media(max-width:900px){
   nav { padding:18px 28px; }
@@ -255,11 +255,20 @@ footer a:hover { color:var(--violet); }
   .nav-toggle { display:flex; }
   footer { padding:20px 28px; }
 }
-
-/* ══════════════════════════════════
-   MOBILE ≤560px
-══════════════════════════════════ */
-@media(max-width:560px){
-  nav { padding:15px 18px; }
-  footer { padding:18px; flex-direction:column; text-align:center; }
+@media(max-width:600px){
+  nav { padding:14px 20px; }
+  .nav-logo { font-size:11px; letter-spacing:.14em; }
+  footer { padding:18px 20px; flex-direction:column; text-align:center; gap:8px; }
+  /* Prevent iOS auto-zoom on input focus */
+  input, textarea, select { font-size:16px !important; }
+}
+@media(max-width:380px){
+  nav { padding:12px 14px; }
+  .nav-logo { font-size:10px; }
+  footer { padding:14px; }
+}
+/* Large screens */
+@media(min-width:1600px){
+  nav { padding:24px 80px; }
+  footer { padding:32px 80px; }
 }

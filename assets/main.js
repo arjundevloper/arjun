@@ -39,14 +39,84 @@ function closeMobileNav() {
   document.getElementById('navMobile')?.classList.remove('open');
 }
 
-/* ── Scroll nav ── */
+/* ── Smooth scroll with easing ── */
 function initNavScroll() {
   const nav = document.getElementById('nav');
   if (!nav) return;
   window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
 }
 
-/* ── Reveal on scroll ── */
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+}
+
+function smoothScrollTo(target, duration) {
+  const start = window.scrollY;
+  const navH  = document.getElementById('nav')?.offsetHeight || 72;
+  const end   = target.getBoundingClientRect().top + window.scrollY - navH;
+  const dist  = end - start;
+  let startTime = null;
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    window.scrollTo(0, start + dist * easeInOutCubic(progress));
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function initSmoothLinks() {
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const id = link.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      e.preventDefault();
+      smoothScrollTo(el, 900);
+    });
+  });
+}
+
+/* ── Smooth wheel scroll (inertia) ── */
+function initSmoothWheel() {
+  // Skip on touch/mobile — native momentum scroll is already great there
+  if ('ontouchstart' in window) return;
+
+  let current = window.scrollY;
+  let target  = window.scrollY;
+  let rafId   = null;
+  const ease  = 0.09; // lower = more floaty, higher = snappier
+
+  function tick() {
+    current += (target - current) * ease;
+    // Stop animating when close enough
+    if (Math.abs(target - current) < 0.5) {
+      current = target;
+      window.scrollTo(0, current);
+      rafId = null;
+      return;
+    }
+    window.scrollTo(0, current);
+    rafId = requestAnimationFrame(tick);
+  }
+
+  window.addEventListener('wheel', e => {
+    e.preventDefault();
+    // Amplify a little so it doesn't feel sluggish
+    target += e.deltaY * 1.2;
+    // Clamp to page bounds
+    target = Math.max(0, Math.min(target, document.body.scrollHeight - window.innerHeight));
+    if (!rafId) rafId = requestAnimationFrame(tick);
+  }, { passive: false });
+
+  // Keep internal state in sync if user uses keyboard / scrollbar
+  window.addEventListener('scroll', () => {
+    if (!rafId) { current = window.scrollY; target = window.scrollY; }
+  });
+}
+
+
 function initReveal() {
   const obs = new IntersectionObserver(entries => {
     entries.forEach((e, i) => {
@@ -165,6 +235,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initCursor();
   initMobileNav();
   initNavScroll();
+  initSmoothLinks();
+  initSmoothWheel();
   initReveal();
   initSkillBars();
   initArt();
